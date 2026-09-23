@@ -45,9 +45,7 @@ docker run -d -p 8108:8108 -v "$PWD/typesense-data:/data" \
 - **Peering address.** `--peering-address` must be a private IP, because traffic between nodes is not encrypted.
 - **Checking the cluster.** `GET /debug` returns `state` 1 on the leader and 4 on followers. Two nodes both reporting 1 means the cluster didn't form.
 - **HTTP 503 from `/health`** means the node isn't ready, for example while it catches up after a restart. It doesn't mean the node is dead.
-- **Recovery.**
-  - A node that was down rejoins and catches up by itself. Restoring it from a backup isn't needed.
-  - After quorum is lost, shrink the nodes file to one node, start it, and add the others back one at a time.
+- **Recovery.** A node that was down normally rejoins and catches up by itself. When quorum is lost, stop and follow the [high-availability recovery guide](https://typesense.org/docs/guide/high-availability.html#recovering-a-cluster-that-has-lost-quorum): identify the node with the latest data before choosing a survivor, then rebuild membership. Starting an arbitrary survivor can discard acknowledged writes.
 - **Clients** list every node, so the client itself retries and spreads load. A load balancer is optional.
 
 ## Backups
