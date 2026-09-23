@@ -32,7 +32,7 @@ A single search is `GET /collections/<c>/documents/search` with `q` and `query_b
 
 - **Precedence.** `&&` and `||` have the same precedence and run left to right, so `a || b && c` means `(a || b) && c`. Parenthesize every mix of the two.
 - **Escaping.** Backticks escape values only. Field names can't contain special characters.
-- **Building filters from user input.** Wrap every value in backticks and strip backticks from the input, or map the input to known values first. Never concatenate raw input into the filter string.
+- **Building filters from user input.** Map selections to known values, then wrap each value in backticks. For values containing a literal backtick, reject them or use a separately indexed, safely encoded identifier; escaping it is undocumented and error-prone. Silently removing it changes the value, which is especially dangerous in an access filter. URL-encode the finished `filter_by` when sending it in a GET request.
 - **Coordinates** are always latitude first. GeoJSON puts longitude first, so swap when converting.
 - **Limits.** A filter can use up to 100 operators by default (`--filter-by-max-ops`). A prefix filter only expands to `max_filter_by_candidates` (default 4) matching words.
 - **Speed.** `range_index` on a numeric field speeds up range filters. `enable_lazy_filter=true` helps when the filter matches a lot of documents but the query words match few.
