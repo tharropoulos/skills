@@ -24,7 +24,7 @@ curl -s "$TS/collections" -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: appli
     {"name": "brand", "type": "string", "facet": true},
     {"name": "sku", "type": "string", "infix": true},
     {"name": "popularity", "type": "int32", "optional": true},
-    {"name": "tenant_id", "type": "string", "optional": true}
+    {"name": "tenant_id", "type": "string", "optional": true, "facet": true}
   ]
 }' >/dev/null
 curl -s "$TS/collections/products_v1" -H "X-TYPESENSE-API-KEY: $KEY" |
@@ -118,6 +118,20 @@ curl -s -o /dev/null -w '%{http_code}\n' -X PATCH "$TS/keys/0" \
 ```
 
 Expected on the pinned 30.2 image: `404`. The checked nightly server source has a `PATCH /keys/:id` route; check the target server before using it.
+
+## Test 7: Excluding a field from hits does not hide its facet values
+
+```sh
+curl -sG "$TS/collections/products_v1/documents/search" \
+  -H "X-TYPESENSE-API-KEY: $KEY" \
+  --data-urlencode 'q=*' --data-urlencode 'query_by=title' \
+  --data-urlencode 'facet_by=tenant_id' \
+  --data-urlencode 'exclude_fields=tenant_id' |
+  jq -e 'all(.hits[]; .document | has("tenant_id") | not) and
+         ([.facet_counts[].counts[].value] | index("other") != null)'
+```
+
+Expected: `true`. The hidden field remains queryable; see the field-projection guidance in `references/keys.md`.
 
 ## Teardown
 
