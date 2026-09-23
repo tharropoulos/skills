@@ -4,7 +4,7 @@ Most Typesense frontends use Algolia's InstantSearch widgets through `typesense-
 
 ## Steps
 
-1. **Get a browser-safe key.** A search-only key, or a scoped key minted by the backend when users see different data. Done when the key in the frontend code can only search. See `keys.md`.
+1. **Get a browser-safe key.** Create it with `POST /keys` and `{"actions": ["documents:search"], "collections": ["products"]}`, using the real collection or alias name. The action is `documents:search`, not `search`. When users see different data, the backend mints a scoped key instead (see `keys.md`). Done when a search with the key succeeds and a write with it gets a 401.
 2. **Configure the adapter.**
 
    ```js
