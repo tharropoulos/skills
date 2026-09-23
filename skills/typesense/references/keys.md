@@ -22,7 +22,7 @@ A Typesense key is a **capability**, meaning a list of actions on a set of colle
 - **Collection scope** is a regex, so `org_.*` covers every collection starting with `org_`. It applies only to collection endpoints. A key with `synonym_sets:*` or `stopwords:*` can edit every set on the cluster, whatever its `collections` say.
 - **Joins widen access.** A search key scoped to one collection can also read fields from any collection that collection references, through a joined query. Leave sensitive fields out of referenced collections, or strip them with `exclude_fields` in a scoped key.
 - **Expiry.** `expires_at` is a Unix timestamp, and `autodelete: true` purges the key hourly once it has expired.
-- **Rotation.** Keys can't be edited. Create the new key, deploy it, then delete the old one.
+- **Updating versus rotation.** Typesense 30.2 returns 404 for `PATCH /keys/<id>`. The checked nightly source adds that endpoint for `description`, `actions`, `collections`, `expires_at` and `autodelete`; the key's `value` stays fixed. Check the running version before using it. To replace a leaked value, create a new key, deploy it, then delete the old one. When changing a scoped key's parent permissions, test an existing child key before rollout.
 - **Mobile apps** fetch the Typesense host and key from your backend at launch rather than bundling them, so they can be rotated without an app release.
 
 ## Scoped search keys
