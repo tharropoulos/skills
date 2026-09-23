@@ -65,6 +65,6 @@ docker run -d -p 8108:8108 -v "$PWD/typesense-data:/data" \
 
 - **Endpoints.** Watch `GET /health`, `GET /metrics.json` for memory, CPU and disk, and `GET /stats.json` for request rates and latency.
 - **Internet-facing.** Typesense can face the internet directly with `--api-port 443` and the `--ssl-certificate` and `--ssl-certificate-key` flags.
-- **Keys.** The bootstrap key only creates the other keys. See `keys.md`.
+- **Keys.** Reserve the bootstrap admin key for provisioning or emergency recovery; give routine callers narrower keys. See `keys.md`.
 - **Configuration** comes from command-line flags, a config file or `TYPESENSE_*` environment variables, in that order of precedence. `--cors-domains` takes origins without trailing slashes.
 - **Frequent collection drops.** When collections are often dropped and recreated, lower `--db-compaction-interval` from its 7-day default so disk space is reclaimed sooner.
