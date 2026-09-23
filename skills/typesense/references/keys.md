@@ -20,7 +20,8 @@ A Typesense key is a **capability**, meaning a list of actions on a set of colle
 
 - **The bootstrap key** passed as `--api-key` is an admin key that can't be listed or rotated. Use it once to create the keys above, then keep it only for emergencies.
 - **Collection scope** is a regex, so `org_.*` covers every collection starting with `org_`. It applies only to collection endpoints. A key with `synonym_sets:*` or `stopwords:*` can edit every set on the cluster, whatever its `collections` say.
-- **Joins widen access.** A search key scoped to one collection can also read fields from any collection that collection references, through a joined query. Leave sensitive fields out of referenced collections, or strip them with `exclude_fields` in a scoped key.
+- **Joins widen access.** A search key scoped to one collection can also read fields from any collection that collection references, through a joined query. Keep sensitive data out of collections reachable by that key, including joined documents.
+- **Field projection is not secrecy.** `exclude_fields` removes values from returned documents, but indexed fields can still be probed through `filter_by` and, when faceted, `facet_by`. Keep secrets out of a browser-searchable collection, or enforce permitted queries in a backend proxy. Use `exclude_fields` to reduce payloads and avoid casually displaying access metadata.
 - **Expiry.** `expires_at` is a Unix timestamp, and `autodelete: true` purges the key hourly once it has expired.
 - **Updating versus rotation.** Typesense 30.2 returns 404 for `PATCH /keys/<id>`. The checked nightly source adds that endpoint for `description`, `actions`, `collections`, `expires_at` and `autodelete`; the key's `value` stays fixed. Check the running version before using it. To replace a leaked value, create a new key, deploy it, then delete the old one. When changing a scoped key's parent permissions, test an existing child key before rollout.
 - **Mobile apps** fetch the Typesense host and key from your backend at launch rather than bundling them, so they can be rotated without an app release.
@@ -33,7 +34,7 @@ A scoped key is a search-only parent key plus a JSON object of search parameters
 - **The parent** must have exactly `actions: ["documents:search"]`. A parent with any other action makes invalid scoped keys.
 - **The parent stays on the server.** A user holding the parent key can search without the embedded filters.
 - **Filters.** Tenant and user filters use exact match (`:=`), for example `filter_by: "tenant_id:=acme"` or `"accessible_to_user_ids:=42"`. The `:` operator matches single words inside a value, which is looser than an access rule should be.
-- **Other useful parameters** are `exclude_fields` (for example the list of user ids that grants access), `limit_hits` to cap how deep a user can page, `limit_multi_searches` to cap searches per `multi_search` request, and `expires_at`. A scoped key's `expires_at` must come before its parent's.
+- **Other useful parameters** are `exclude_fields` (to hide access metadata from ordinary hits), `limit_hits` to cap how deep a user can page, `limit_multi_searches` to cap searches per `multi_search` request, and `expires_at`. A scoped key's `expires_at` must come before its parent's.
 - **Revocation.** Individual scoped keys can't be revoked. Deleting the parent invalidates every key minted from it. To be able to cut off one organization at a time, create one parent key per organization.
 
 ### Multi-tenant and role-based access
