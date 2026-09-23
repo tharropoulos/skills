@@ -76,4 +76,4 @@ The plugin installs include the Typesense Cloud MCP server. `npx skills` and cop
 |---|---|
 | typesense-cloud | Provision, resize and clone Typesense Cloud clusters and mint API keys. It only manages Cloud clusters, not self-hosted servers. |
 
-To use it without the plugin, add `https://cloud.typesense.org/mcp/v1` to your agent as a remote (HTTP) MCP server.
+To use it without the plugin, add `https://cloud.typesense.org/mcp/v1` to your agent as a remote (HTTP) MCP server. Refer to [this](https://typesense.org/docs/guide/typesense-cloud/mcp-server.html#step-1-connect) guide for more details.
