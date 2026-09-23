@@ -23,7 +23,8 @@ curl -s "$TS/collections" -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: appli
     {"name": "title", "type": "string"},
     {"name": "brand", "type": "string", "facet": true},
     {"name": "sku", "type": "string", "infix": true},
-    {"name": "popularity", "type": "int32", "optional": true}
+    {"name": "popularity", "type": "int32", "optional": true},
+    {"name": "tenant_id", "type": "string", "optional": true}
   ]
 }' >/dev/null
 curl -s "$TS/collections/products_v1" -H "X-TYPESENSE-API-KEY: $KEY" |
@@ -85,6 +86,28 @@ search
 ```
 
 Expected: `0`, then `1`. The only document in the collection is the mug, and "cup" finds it only after the collection links the set.
+
+## Test 5: A pinned hit bypasses a request filter unless curated hits are filtered
+
+```sh
+curl -s "$TS/collections/products_v1/documents" -H "X-TYPESENSE-API-KEY: $KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"id":"3","title":"Plate","brand":"Acme","sku":"AC-300","tenant_id":"other"}' >/dev/null
+curl -s "$TS/collections/products_v1/documents" -H "X-TYPESENSE-API-KEY: $KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"id":"4","title":"Spoon","brand":"Acme","sku":"AC-400","tenant_id":"acme"}' >/dev/null
+for filter_curated_hits in false true; do
+  curl -sG "$TS/collections/products_v1/documents/search" \
+    -H "X-TYPESENSE-API-KEY: $KEY" \
+    --data-urlencode 'q=*' --data-urlencode 'query_by=title' \
+    --data-urlencode 'filter_by=tenant_id:=acme' \
+    --data-urlencode 'pinned_hits=3:1' \
+    --data-urlencode "filter_curated_hits=$filter_curated_hits" |
+    jq -r '[.hits[].document.id] | join(",")'
+done
+```
+
+Expected: `3,4`, then `4`. This checks the ordinary-key case described in `references/keys.md` and `references/relevance.md`.
 
 ## Teardown
 
