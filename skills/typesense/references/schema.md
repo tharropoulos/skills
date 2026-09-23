@@ -36,7 +36,7 @@ A collection's schema is its **RAM budget**. Every field listed in the schema is
 
 ## Nested objects
 
-Set `"enable_nested_fields": true` on the collection and declare `object` or `object[]` fields. Sub-fields are addressed with dots, like `address.city`. A sub-field inside an `object[]` is itself an array type, so `addresses.zip` is `string[]`. To filter on several properties of the same array element, scope them with braces, as in `ingredients.{name:=cheese && amount:<30}`. Dotted conditions joined with `&&` can match across different elements.
+Set `"enable_nested_fields": true` on the collection and declare `object` or `object[]` fields. Sub-fields are addressed with dots, like `address.city`. A sub-field inside an `object[]` is itself an array type, so `addresses.zip` is `string[]`. A broad parent field definition takes precedence over a narrower child definition; declare only the children you need indexed when the other properties are display-only. To filter on several properties of the same array element, scope them with braces, as in `ingredients.{name:=cheese && amount:<30}`. Dotted conditions joined with `&&` can match across different elements.
 
 ## Tokenization recipes
 
