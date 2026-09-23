@@ -1,0 +1,20 @@
+{
+  "name": "typesense-skills",
+  "interface": {
+    "displayName": "Typesense"
+  },
+  "plugins": [
+    {
+      "name": "typesense",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/typesense/skills.git"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "typesense-skills",
+  "owner": {
+    "name": "Typesense"
+  },
+  "plugins": [
+    {
+      "name": "typesense",
+      "source": "./",
+      "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster, plus the Typesense Cloud MCP server."
+    }
+  ]
+}

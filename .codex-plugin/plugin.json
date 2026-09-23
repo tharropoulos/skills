@@ -1,0 +1,47 @@
+{
+  "name": "typesense",
+  "version": "1.0.0",
+  "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster, plus the Typesense Cloud MCP server.",
+  "author": {
+    "name": "Typesense",
+    "url": "https://typesense.org"
+  },
+  "homepage": "https://typesense.org/docs/",
+  "repository": "https://github.com/typesense/skills",
+  "keywords": [
+    "typesense",
+    "search",
+    "search-engine",
+    "vector-search",
+    "semantic-search",
+    "faceting",
+    "instantsearch",
+    "mcp",
+    "typesense-cloud"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Typesense",
+    "shortDescription": "Typesense search and Cloud MCP",
+    "longDescription": "Build and run search with Typesense v30: collection schemas, importing and syncing data, filters and facets, relevance tuning, API keys, vector and hybrid search, InstantSearch UIs and self-hosted or Cloud clusters, plus the Typesense Cloud MCP server for provisioning clusters and minting keys.",
+    "developerName": "Typesense",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://typesense.org/docs/",
+    "privacyPolicyURL": "https://cloud.typesense.org/legal/privacy",
+    "termsOfServiceURL": "https://cloud.typesense.org/legal/terms",
+    "defaultPrompt": [
+      "Design a Typesense collection schema and import pipeline for this project",
+      "Add a search page backed by Typesense with a scoped search-only key",
+      "Upgrade this project's Typesense code to the v30 API"
+    ],
+    "brandColor": "#D90368",
+    "composerIcon": "./logo.svg",
+    "logo": "./logo.svg",
+    "screenshots": []
+  }
+}

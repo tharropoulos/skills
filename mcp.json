@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "typesense-cloud": {
+      "type": "streamable-http",
+      "url": "https://cloud.typesense.org/mcp/v1"
+    }
+  }
+}

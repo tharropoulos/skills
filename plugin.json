@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "typesense",
+  "version": "1.0.0",
+  "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster, plus the Typesense Cloud MCP server.",
+  "author": {
+    "name": "Typesense",
+    "url": "https://typesense.org"
+  },
+  "homepage": "https://typesense.org/docs/",
+  "repository": "https://github.com/typesense/skills",
+  "keywords": [
+    "typesense",
+    "search",
+    "search-engine",
+    "vector-search",
+    "semantic-search",
+    "faceting",
+    "instantsearch",
+    "mcp",
+    "typesense-cloud"
+  ]
+}
