@@ -9,13 +9,13 @@ Typesense changes fast and several APIs were renamed in v30, so much of what you
 
 ## Steps
 
-1. **Pin the version.** Read `version` from `GET /debug`. If there is no server to call, use the Docker image tag or the Cloud console. Also note whether the cluster is on Typesense Cloud or self-hosted, whether the Typesense Cloud MCP server is connected, and which client library and version the lockfile pins. Done when you can name the server version, since most features and parameter names depend on it.
+1. **Pin the version.** Read `version` from `GET /debug`. If there is no server to call, use the Docker image tag or the Cloud console. For client code, check the lockfile's client version too. Done when you can name the server version, since features and parameter names depend on it.
 
 2. **Open the references for the task** from the table below, before writing any code. A task often touches several rows, for example a search page touches both UI and keys. Done when you have read every reference whose row matches part of the task.
 
 3. **Look up exact parameters for that version.** Fetch `https://typesense.org/docs/<version>/api/<page>.md`, or `<page>.<lang>.md` for one language's samples (`javascript`, `python`, `php`, `ruby`, `go`, `java`, `dart`, `swift`, `shell`). The page index is `https://typesense.org/docs/llms.txt`. Guides live at `https://typesense.org/docs/guide/<page>.md` and describe the latest version. Exact request and response schemas are in `https://raw.githubusercontent.com/typesense/typesense-api-spec/master/openapi.yml`. For client method names and signatures, trust the installed client's types over doc samples.
 
-4. **Verify against the server.** Done when the server confirms the change.
+4. **Verify against the server when one is available.** If no server is reachable, state which behavior remains unverified and use the source, tests and versioned docs to check it. Done when each changed behavior has evidence or an explicit verification gap.
    - Schema. `GET /collections/<name>` shows each field with the flags you intended.
    - Import. Every line of the import response has `"success": true`.
    - Search. The query returns the hits you expected, in the order you expected.
@@ -55,11 +55,8 @@ Typesense v30 moved synonyms and overrides out of collections into standalone se
 
 A synonym or curation set does nothing until a collection links it. Upgrades auto-migrate old definitions into sets named `<collection>_synonyms_index` and `<collection>_curations_index`, so list `/synonym_sets` and `/curation_sets` to find them.
 
-## In every task
+## Shared rules
 
-- **Document ids.** `id` is a string with no characters that need URL encoding. Derive it from the primary key in your database so every write is idempotent.
-- **Aliases.** Apps read and write through an alias such as `products` that points at a versioned collection such as `products_v3`. Aliases and collections share one namespace, so the physical name always carries the version.
+- **Document ids.** Derive a stable string `id` from the primary key in your database so retries target the same document. Use URL-safe ids where possible; encode the id when it appears in a URL path.
 - **Keys.** Browsers and mobile apps get a search-only key or a scoped key minted by your backend. The admin key and the bootstrap `--api-key` stay on the server.
-- **Import results.** The import endpoint returns HTTP 200 whatever happened. The outcome is on each JSONL line, so count the `"success": false` lines and surface their `error`.
-- **Embedding fields.** List them in `exclude_fields` on every search, or each hit carries the whole vector.
 - **Source of truth.** Typesense is a secondary index. The primary database owns the data, and anything in Typesense can be rebuilt from it.
