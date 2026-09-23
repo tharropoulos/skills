@@ -1,6 +1,6 @@
 # Skill validation cases
 
-These cases check the behaviour behind step 4 of `SKILL.md` and the rules in its "In every task" and "v30 vocabulary" sections. Run them by hand against a local server after editing the skill. If a case fails on a new Typesense version, the skill's guidance for it needs updating.
+These cases check the behavior behind step 4 of `SKILL.md` and claims in its references and "v30 vocabulary" section. Run them against a local server after editing the skill. If a case fails on a new Typesense version, update the affected guidance.
 
 ## Setup
 
@@ -27,9 +27,9 @@ curl -s "$TS/collections" -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: appli
   ]
 }' >/dev/null
 curl -s "$TS/collections/products_v1" -H "X-TYPESENSE-API-KEY: $KEY" |
-  jq -e '(.fields[] | select(.name == "brand") | .facet) and
-         (.fields[] | select(.name == "sku") | .infix) and
-         (.fields[] | select(.name == "popularity") | .optional)'
+  jq -e 'any(.fields[]; .name == "brand" and .facet == true) and
+         any(.fields[]; .name == "sku" and .infix == true) and
+         any(.fields[]; .name == "popularity" and .optional == true)'
 ```
 
 Expected exit code: 0.
