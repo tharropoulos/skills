@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "typesense-cloud": {
+      "type": "http",
+      "url": "https://cloud.typesense.org/mcp/v1"
+    }
+  }
+}

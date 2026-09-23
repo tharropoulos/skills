@@ -1,14 +1,16 @@
 {
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
   "name": "typesense-skills",
   "description": "Agent skills for building with Typesense.",
   "owner": {
-    "name": "typesense"
+    "name": "Typesense",
+    "url": "https://typesense.org"
   },
   "plugins": [
     {
       "name": "typesense",
       "source": "./",
-      "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster."
+      "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster, plus the Typesense Cloud MCP server."
     }
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "name": "typesense",
+  "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster, plus the Typesense Cloud MCP server.",
+  "version": "1.0.0",
+  "mcpServers": "./.mcp.json",
+  "author": {
+    "name": "Typesense",
+    "url": "https://typesense.org"
+  }
+}
