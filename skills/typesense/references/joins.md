@@ -17,7 +17,7 @@ A reference field links a document to documents in another collection. Joins fil
 - **Plan them at creation.** A reference field can't be added with an alter, so adding one means a new collection and a reindex.
 - **Import order.** Without `async_reference: true` (plus `optional: true`), indexing a document whose referenced document doesn't exist yet fails. Set it when the two collections are loaded independently.
 - **Cascade delete** is on by default. A document is deleted when every document it references is deleted. Turning it off with `cascade_delete: false` requires `async_reference: true`.
-- **Reindex together.** References store internal ids that depend on indexing order. Swapping one collection behind an alias means reindexing every collection joined to it at the same time.
+- **Reindex together.** References store internal ids that depend on indexing order. Build every related new collection against the new referenced collection before cutover; check that a reference written with an alias resolved to the intended version. Alias updates are separate API calls, so swapping several public aliases has an inconsistent interval. Coordinate readers and writers, or expose the new joined group through one entrypoint alias after it is ready.
 - **Access.** A search key scoped to one collection can read fields of every collection it references, through joins. See `keys.md`.
 - **No mutual references.** From v30, two collections that reference each other leave the reference fields unindexed.
 

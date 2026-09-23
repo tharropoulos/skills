@@ -82,18 +82,18 @@ Buffer events and flush them through the import endpoint every few seconds rathe
 
 ## Reindexing
 
-**Zero-downtime reindex with an alias.** Use this when the schema changes or for a full rebuild.
-1. Create a new collection, such as `products_v4`.
-2. Import everything into it and check the results.
-3. Compare its document count with the source.
-4. Repoint the alias with `PUT /aliases/products` and `{"collection_name": "products_v4"}`.
-5. Drop the old collection once nothing reads from it.
+**Reindex with search availability through an alias.** Use this when the schema changes or for a full rebuild.
+1. Record a source change checkpoint, then create a new collection, such as `products_v4`.
+2. Import a consistent source snapshot into it and check every import result. Replay all changes since the checkpoint, including deletes, into the new collection.
+3. Compare counts and sampled documents with the source. Close the cutover race: briefly pause writes and drain in-flight writes, or keep dual-writing to both collections until the new one catches up and the swap completes.
+4. Repoint the alias with `PUT /aliases/products` and `{"collection_name": "products_v4"}`. Resume writes through the alias only after the cutover barrier, then confirm a fresh write and delete land in the new collection.
+5. Drop the old collection after readers and workers have stopped targeting its physical name.
 
 Alias swapping requires adequate memory. Do not try to copy a whole collection when its size would overload the server's RAM.
 
-Writes that land during the rebuild must reach the new collection too. Either write to both collections until the swap, or re-run the incremental sync from the rebuild's start time after swapping. If other collections hold reference fields pointing at this one, reindex them together. See [joins.md](joins.md).
+If other collections hold reference fields pointing at this one, reindex them together. See [joins.md](joins.md).
 
-**In-place reindex.** Use this when the schema is unchanged. Stamp every document with a `last_synced_at` of the run's start time `T` and upsert everything. Then delete the stale documents with `filter_by=last_synced_at:<T`.
+**In-place reconciliation.** When the schema is unchanged, a complete source scan can repair missing and changed documents. To remove records absent from the source, stamp each scanned document with a run marker and delete older markers only after a successful scan and a write barrier. Concurrent writes can otherwise be mistaken for stale records; use the alias rebuild above when that barrier is unavailable.
 
 ## When writes fail
 
