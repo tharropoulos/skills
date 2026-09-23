@@ -46,9 +46,13 @@ curl -s -o /tmp/ts-import.out -w '%{http_code}\n' \
   -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: text/plain' \
   --data-binary @/tmp/ts-import.jsonl
 jq -s '[.[] | select(.success == false)] | length' /tmp/ts-import.out
+jq -s -e '.[1].error != null and (.[1] | has("document") | not)' /tmp/ts-import.out
+curl -s "$TS/collections/products_v1/documents/import?action=upsert&return_id=true&return_doc=true" \
+  -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: text/plain' \
+  --data-binary @/tmp/ts-import.jsonl | jq -s -e '.[1].id == "2" and (.[1] | has("document"))'
 ```
 
-Expected: `200`, then `1`. The second document fails on its `popularity` type while the request as a whole still succeeds. This is why the skill says to count the `"success": false` lines.
+Expected: `200`, `1`, `true`, `true`. The second document fails on its `popularity` type while the request as a whole still succeeds. The failed document appears only when `return_doc=true` is requested.
 
 ## Test 3: A search-only key is rejected on writes
 
