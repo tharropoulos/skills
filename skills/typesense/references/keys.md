@@ -34,6 +34,7 @@ A scoped key is a search-only parent key plus a JSON object of search parameters
 - **The parent** must have exactly `actions: ["documents:search"]`. A parent with any other action makes invalid scoped keys.
 - **The parent stays on the server.** A user holding the parent key can search without the embedded filters.
 - **Filters.** Tenant and user filters use exact match (`:=`), for example `filter_by: "tenant_id:=acme"` or `"accessible_to_user_ids:=42"`. The `:` operator matches single words inside a value, which is looser than an access rule should be.
+- **Curated hits.** The checked server source forces `filter_curated_hits=true` whenever a scoped key embeds `filter_by`, including searches with pins or curations. For an ordinary search-only key, pinned hits and curation includes bypass the request filter by default; set `filter_curated_hits=true` for filters that must govern every hit. Test this boundary on the deployed version.
 - **Other useful parameters** are `exclude_fields` (to hide access metadata from ordinary hits), `limit_hits` to cap how deep a user can page, `limit_multi_searches` to cap searches per `multi_search` request, and `expires_at`. A scoped key's `expires_at` must come before its parent's.
 - **Revocation.** Individual scoped keys can't be revoked. Deleting the parent invalidates every key minted from it. To be able to cut off one organization at a time, create one parent key per organization.
 
