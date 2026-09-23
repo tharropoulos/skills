@@ -1,0 +1,21 @@
+---
+description: Guidance for writing or editing any code, config, CI workflow or script that uses Typesense, including collection schemas, importing or syncing data, search and filter_by queries, API keys, relevance tuning, vector search, and running a cluster.
+alwaysApply: false
+---
+
+# Typesense
+
+Typesense changes fast and several APIs were renamed in v30, so what you remember about it may be out of date. **Prefer the live server and the versioned docs over memory.** Read the server version from `GET /debug`, then look up parameters at `https://typesense.org/docs/<version>/api/<page>.md`. For client method names, trust the installed client's types.
+
+## In every task
+
+- **Document ids** are strings derived from the primary key in your database, so every write is idempotent.
+- **Aliases.** Apps read and write through an alias such as `products` that points at a versioned collection such as `products_v3`.
+- **Keys.** Browsers and mobile apps get a search-only or scoped key. The admin key stays on the server.
+- **Import results.** The import endpoint returns HTTP 200 whatever happened. Check each JSONL line for `"success": false`.
+- **Embedding fields** go in `exclude_fields` on every search.
+- **v30 renames.** Synonyms and overrides moved to `/synonym_sets` and `/curation_sets`, and overrides are now called curations.
+
+## Shared guidance
+
+Use the [typesense skill](../skills/typesense/SKILL.md) and read the references its table points to for the task.
