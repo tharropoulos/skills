@@ -35,7 +35,7 @@ Sync code uses `upsert` with whole documents, or `emplace` when it only has some
 2. **Write the mapper** from a database row to a Typesense document, following the mapping rules above.
 3. **Build the watermark loop** (polling) or the event handler (change data capture), as described below.
 4. **Handle deletes** in one of three ways, described below.
-5. **Add a full reindex** through an alias swap on a schedule, such as nightly. It fills whatever gaps the incremental sync left.
+5. **Add reconciliation.** Compare source and index counts and sampled ids, then repair drift or rebuild through an alias. Schedule a full rebuild only if its cost and freshness window fit the workload.
 6. **Walk the failure scenarios.** Done when you can point to the line of code that handles each of these.
    - The process crashes in the middle of a run.
    - A row is updated while a run is in progress.
@@ -49,12 +49,14 @@ Sync code uses `upsert` with whole documents, or `emplace` when it only has some
 The watermark is the point in time up to which every change is known to be in Typesense. Persist it outside the process, in a database table or a key-value store.
 
 1. Read the watermark `W`. On the first run `W` is the epoch, which makes the first run a full backfill.
-2. Take `T` from the database clock (`SELECT now()`) before fetching anything. The app server's clock drifts from the database's.
-3. Fetch rows with `updated_at > W - margin`. The margin is a small overlap, such as a minute, that catches transactions which committed late with an earlier timestamp. Page through the rows with a keyset on `(updated_at, id)`, not with `OFFSET`.
+2. Take `T` from the database clock before fetching anything. Use a consistent snapshot if the database supports one.
+3. Fetch rows with `W - margin < updated_at <= T`. Page through the rows with a keyset on `(updated_at, id)`, not with `OFFSET`. Pick a margin larger than the longest transaction and timestamp precision gap you expect.
 4. Map each page, import it with `action=upsert`, and check every result line.
 5. Only if every page succeeded, save `T` as the new watermark. If anything failed, leave the watermark where it was so the next run retries the same window. Re-sending those rows is harmless.
 
 Keep `updated_at` current with a database trigger rather than in app code, so writes made outside the app (migrations, admin scripts, other services) get synced too. On restart, resume from the saved watermark. Seeding it from `MAX(updated_at)` in Typesense skips everything that changed while the worker was down.
+
+An `updated_at` poll cannot guarantee capture of a transaction that commits after its timestamp has fallen outside the overlap window. Use a transactional outbox or log-based change capture when missing a change is unacceptable. Process its events in source order per id, and checkpoint only after Typesense acknowledges every write or delete; a late older event must not overwrite a newer document.
 
 Run exactly one worker. A web server with several processes or replicas starts one scheduler per process, so run the sync as its own job or take a lock (for example a Postgres advisory lock) before each run.
 
