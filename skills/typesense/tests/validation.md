@@ -109,6 +109,16 @@ done
 
 Expected: `3,4`, then `4`. This checks the ordinary-key case described in `references/keys.md` and `references/relevance.md`.
 
+## Test 6: Key patching is unavailable on v30.2
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' -X PATCH "$TS/keys/0" \
+  -H "X-TYPESENSE-API-KEY: $KEY" -H 'Content-Type: application/json' \
+  -d '{"description":"search-only-updated"}'
+```
+
+Expected on the pinned 30.2 image: `404`. The checked nightly server source has a `PATCH /keys/:id` route; check the target server before using it.
+
 ## Teardown
 
 ```sh
