@@ -1,6 +1,6 @@
 ---
 name: typesense
-description: Typesense v30 API rules and recipes. Use before writing or editing any code, script or config that calls Typesense, including collection schemas, importing or syncing data, search and filter_by queries, API keys, relevance tuning, vector search, and running a cluster.
+description: Typesense v30 API rules and recipes. Use before writing or editing any code, config, CI workflow or script that uses Typesense, including collection schemas, importing or syncing data, search and filter_by queries, API keys, relevance tuning, vector search, and running a cluster.
 ---
 
 # Typesense
@@ -11,7 +11,7 @@ Typesense changes fast and several APIs were renamed in v30, so much of what you
 
 1. **Pin the version.** Read `version` from `GET /debug`. If there is no server to call, use the Docker image tag or the Cloud console. Also note whether the cluster is on Typesense Cloud or self-hosted, whether the Typesense Cloud MCP server is connected, and which client library and version the lockfile pins. Done when you can name the server version, since most features and parameter names depend on it.
 
-2. **Read the reference for the task** from the table below. Read every reference a task touches.
+2. **Open the references for the task** from the table below, before writing any code. A task often touches several rows, for example a search page touches both UI and keys. Done when you have read every reference whose row matches part of the task.
 
 3. **Look up exact parameters for that version.** Fetch `https://typesense.org/docs/<version>/api/<page>.md`, or `<page>.<lang>.md` for one language's samples (`javascript`, `python`, `php`, `ruby`, `go`, `java`, `dart`, `swift`, `shell`). The page index is `https://typesense.org/docs/llms.txt`. Guides live at `https://typesense.org/docs/guide/<page>.md` and describe the latest version. Exact request and response schemas are in `https://raw.githubusercontent.com/typesense/typesense-api-spec/master/openapi.yml`. For client method names and signatures, trust the installed client's types over doc samples.
 
@@ -23,17 +23,17 @@ Typesense changes fast and several APIs were renamed in v30, so much of what you
 
 | Task | Read |
 |---|---|
-| Collection design, field types, tokenizing SKUs, phone numbers, emails and URLs, changing a schema | [references/schema.md](references/schema.md) |
-| Importing data, syncing from a database, reindexing, 503s | [references/sync.md](references/sync.md) |
-| `filter_by`, facets, grouping, pagination, `multi_search`, geo | [references/search.md](references/search.md) |
-| Ranking, typos, boosting, pinning, synonyms, curation, stemming | [references/relevance.md](references/relevance.md) |
-| API keys, scoped keys, multi-tenant access | [references/keys.md](references/keys.md) |
-| Embeddings, semantic and hybrid search, RAG, natural language search, image and voice search | [references/ai.md](references/ai.md) |
-| JOINs and reference fields | [references/joins.md](references/joins.md) |
-| Search analytics, popular queries, click and conversion counters | [references/analytics.md](references/analytics.md) |
-| Search UI, the InstantSearch adapter, per-framework setup | [references/ui.md](references/ui.md) |
-| Self-hosting, sizing, high availability, backups, upgrades, CI | [references/ops.md](references/ops.md) |
-| Typesense Cloud clusters, the Cloud Management API | [references/cloud.md](references/cloud.md) |
+| Designing or changing a collection, choosing field types, finding SKUs, phone numbers, emails or URLs by fragments | `references/schema.md` |
+| Importing data, keeping Typesense in sync with a database or with app writes, reindexing, 503 errors | `references/sync.md` |
+| Filters, facets and their counts, grouping, pagination, searching several collections at once, geo search | `references/search.md` |
+| Result order, boosting by popularity or stock, typos, pinning or hiding results, synonyms, stemming | `references/relevance.md` |
+| API keys for browsers, apps, CI or services, per-user or per-tenant access | `references/keys.md` |
+| Search by meaning, semantic or hybrid search, embeddings, RAG or chat over data, natural-language queries, image and voice search | `references/ai.md` |
+| Data spread over several collections, per-customer prices or permissions, related records, JOINs | `references/joins.md` |
+| Popular searches, query suggestions, tracking clicks and conversions, ranking by clicks | `references/analytics.md` |
+| Search pages and components, InstantSearch, framework setup, keys in frontend builds | `references/ui.md` |
+| Running Typesense locally, in CI or self-hosted, sizing, high availability, backups, upgrades | `references/ops.md` |
+| Typesense Cloud clusters, the Cloud Management API, Terraform | `references/cloud.md` |
 
 ## Typesense Cloud MCP server
 
