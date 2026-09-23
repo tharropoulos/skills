@@ -23,7 +23,7 @@ Most Typesense frontends use Algolia's InstantSearch widgets through `typesense-
 
    `query_by` is required and the adapter sends nothing without it. `collectionSpecificSearchParameters` sets different parameters per collection for federated search.
 3. **Render widgets** with `searchClient` and `indexName` set to the collection or alias name. Attributes used by `refinementList`, `menu` and similar widgets must be faceted in the schema. `sortBy` items are named `<collection>/sort/<field>:<direction>`, for example `products/sort/price:asc`.
-4. **Build and check the bundle.** Done when the built output contains the search key and no admin key.
+4. **Build and check the bundle.** Done when the built output contains only the intended search key and no admin, parent scoped-key or write key.
 
 ## Keys in frontend builds
 
