@@ -8,6 +8,13 @@ Agent skills for building with [Typesense](https://typesense.org).
 npx skills add typesense/skills
 ```
 
+Or, in Claude Code, as a plugin:
+
+```
+/plugin marketplace add typesense/skills
+/plugin install typesense@typesense-skills
+```
+
 Then add this line to the project's `CLAUDE.md` or `AGENTS.md`:
 
 ```

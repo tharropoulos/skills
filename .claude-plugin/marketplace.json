@@ -1,0 +1,14 @@
+{
+  "name": "typesense-skills",
+  "description": "Agent skills for building with Typesense.",
+  "owner": {
+    "name": "typesense"
+  },
+  "plugins": [
+    {
+      "name": "typesense",
+      "source": "./",
+      "description": "Typesense v30 API rules and recipes for schemas, syncing data, search, API keys, relevance, vector search and running a cluster."
+    }
+  ]
+}
